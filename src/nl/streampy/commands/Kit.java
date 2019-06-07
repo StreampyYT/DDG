@@ -31,11 +31,29 @@ public class Kit implements CommandExecutor {
 		
 		if (args.length == 0 ) {
 			//help menu
+			if (player.hasPermission("kit.create"))
+				player.sendMessage(ChatColor.GREEN + "/kit create <naam>");
+			if (player.hasPermission("kit.update"))
+				player.sendMessage(ChatColor.GREEN + "/kit update <naam>");
+			if (player.hasPermission("kit.displayname"))
+				player.sendMessage(ChatColor.GREEN + "/kit displayname <naam> <displayname>");
+			if (player.hasPermission("kit.delete"))
+				player.sendMessage(ChatColor.GREEN + "/kit delete <naam>");
+			if (player.hasPermission("kit.seticon"))
+				player.sendMessage(ChatColor.GREEN + "/kit seticon <naam>");
+			if (player.hasPermission("kit.list"))
+				player.sendMessage(ChatColor.GREEN + "/kit list");
+			if (player.hasPermission("kit.select"))
+				player.sendMessage(ChatColor.GREEN + "/kit <naam>");
 			return false;
 		}
 		
 		switch(args[0].toLowerCase()) {
 			case "create":
+				if (!player.hasPermission("kit.create")) {
+					player.sendMessage(ChatColor.RED + "Je hebt niet de juiste bevoegdheden op deze commando te gebruiken!");
+					return false;
+				}
 				//Check of de lengte genoeg is om de commando uit te voeren!
 				if (args.length == 1) {
 					player.sendMessage(ChatColor.RED + "Gebruik /" + cmd.getName() + " " +  args[0] + " <naam>");
@@ -53,6 +71,10 @@ public class Kit implements CommandExecutor {
 				player.sendMessage(ChatColor.GREEN + "Je hebt succesvol de kit " +  ChatColor.DARK_GREEN + args[1] + ChatColor.GREEN + " aangemaakt!");
 				break;
 			case "update":
+				if (!player.hasPermission("kit.update")) {
+					player.sendMessage(ChatColor.RED + "Je hebt niet de juiste bevoegdheden op deze commando te gebruiken!");
+					return false;
+				}
 				//update een kit / zet een nieuw inventory voor in de plaats van
 				//Check of de lengte genoeg is om de commando uit te voeren!
 				if (args.length == 1) {
@@ -71,6 +93,10 @@ public class Kit implements CommandExecutor {
 				player.sendMessage(ChatColor.GREEN + "De inventory van " + args[1] + " is nu geupdate!");
 				break;
 			case "displayname":
+				if (!player.hasPermission("kit.displayname")) {
+					player.sendMessage(ChatColor.RED + "Je hebt niet de juiste bevoegdheden op deze commando te gebruiken!");
+					return false;
+				}
 				//Check of de lengte genoeg is om de commando uit te voeren!
 				if (args.length == 1 || args.length == 2) {
 					player.sendMessage(ChatColor.RED + "Gebruik /" + cmd.getName() + " " +  args[0] + " <naam> <displayname>");
@@ -97,6 +123,10 @@ public class Kit implements CommandExecutor {
 				player.sendMessage(ChatColor.GREEN + "De displayname van " + ChatColor.DARK_GREEN +  args[1] + ChatColor.GREEN + " is gezet naar " + ChatColor.translateAlternateColorCodes('&', name) + ChatColor.GREEN + "!");
 				break;
 			case "delete":
+				if (!player.hasPermission("kit.delete")) {
+					player.sendMessage(ChatColor.RED + "Je hebt niet de juiste bevoegdheden op deze commando te gebruiken!");
+					return false;
+				}
 				//Check of de lengte genoeg is om de commando uit te voeren!
 				if (args.length == 1) {
 					player.sendMessage(ChatColor.RED + "Gebruik /" + cmd.getName() + " " +  args[0] + " <naam>");
@@ -116,8 +146,14 @@ public class Kit implements CommandExecutor {
 						return false;
 					}
 				}
+				
+				player.sendMessage(ChatColor.RED + "Je hebt succesvol de kit " + args[1] + "verwijderd!");
 				break;
 			case "seticon":
+				if (!player.hasPermission("kit.seticon")) {
+					player.sendMessage(ChatColor.RED + "Je hebt niet de juiste bevoegdheden op deze commando te gebruiken!");
+					return false;
+				}
 				if (args.length == 1) {
 					player.sendMessage(ChatColor.RED + "Gebruik /" + cmd.getName() + " " +  args[0] + " <naam>");
 					return false;
@@ -139,7 +175,28 @@ public class Kit implements CommandExecutor {
 				icon.setIcon(player.getInventory().getItemInMainHand());
 				player.sendMessage(ChatColor.GREEN + "De icon van " + args[1] + " is nu geupdate!");
 				break;
+			case "list":
+				if (!player.hasPermission("kit.list")) {
+					player.sendMessage(ChatColor.RED + "Je hebt niet de juiste bevoegdheden op deze commando te gebruiken!");
+					return false;
+				}
+				
+				String kitList = "";
+				
+				for (KitClass kits : plugin.kits) {
+					kitList += ", " + kits.getName();
+				}
+				
+				if (kitList.length() > 0) {
+					kitList = kitList.substring(2);
+				}
+				player.sendMessage(ChatColor.GREEN + "Kits: " + (kitList == "" ? ChatColor.RED + "Er zijn geen kits gevonden!" : ChatColor.DARK_GREEN + kitList));
+				break;
 			default:
+				if (!player.hasPermission("kit.select")) {
+					player.sendMessage(ChatColor.RED + "Je hebt niet de juiste bevoegdheden op deze commando te gebruiken!");
+					return false;
+				}
 				//pak de kit die je oproept
 				//Check of de kit wel bestaat
 				if (!kitExist(args[0])) {

@@ -195,6 +195,10 @@ public class Main extends JavaPlugin {
 			try {
 				//Loop alle kits door
 				kitConfig.load(kitFile);
+				kitConfig.set("kit", null);
+				kitConfig.save(kitFile);
+				kitConfig.load(kitFile);
+				
 				for (int i = 0; i < kits.size(); i++) {
 					KitClass kit = kits.get(i);
 					kitConfig.set("kit." + i + ".name", kit.getName());

@@ -161,7 +161,7 @@ public class EventsHandler extends Mysql implements Listener {
 				
 				ItemStack stack = kitC.getIcon();
 				ItemMeta stackm = stack.getItemMeta();
-				stackm.setDisplayName(ChatColor.translateAlternateColorCodes('&', kitC.getDisplayName()));
+				stackm.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&f" + kitC.getDisplayName()));
 				stack.setItemMeta(stackm);
 				
 				inv.addItem(stack);

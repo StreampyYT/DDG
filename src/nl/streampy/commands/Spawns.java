@@ -33,27 +33,28 @@ public class Spawns extends Mysql implements CommandExecutor {
 		Player player = (Player) sender;
 		
 		if (args.length == 0) {
+			if (player.hasPermission("spawns.set"))
+				player.sendMessage(ChatColor.GREEN + "/spawns set <naam>");
+			if (player.hasPermission("spawns.delete"))
+				player.sendMessage(ChatColor.GREEN + "/spawns delete <naam>");
+			if (player.hasPermission("spawns.setmain"))
+				player.sendMessage(ChatColor.GREEN + "/spawns setmain <naam>");
+			if (player.hasPermission("spawns.list"))
+				player.sendMessage(ChatColor.GREEN + "/spawns list");
+			if (player.hasPermission("spawns.select"))
+				player.sendMessage(ChatColor.GREEN + "/spawns select");
 			//Als er geen sub commands zijn bij gestuurd.
-			//Stuur een lijst met alle spawn locatie's
-			String spawnList = "";
-			ResultSet select = select("SELECT * FROM " + plugin.ltable);
-			try {
-				while (select.next()) {
-					spawnList += ", " + select.getString("Name");
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
 			
-			if (spawnList.length() > 0) {
-				spawnList = spawnList.substring(2);
-			}
-			player.sendMessage(ChatColor.GREEN + "Locations: " + (spawnList == "" ? ChatColor.RED + "Er zijn geen locations gevonden!" : ChatColor.DARK_GREEN + spawnList));
 			return false;
 		}
 		
 		switch(args[0].toLowerCase()) {
 			case "set":
+				if (!player.hasPermission("spawns.set")) {
+					player.sendMessage(ChatColor.RED + "Je hebt niet de juiste bevoegdheden op deze commando te gebruiken!");
+					return false;
+				}
+				
 				if (args.length == 2) {
 					//args[1] is de naam van de spawn
 					if (valueExists("SELECT * FROM " + plugin.ltable + " WHERE Name='" + args[1] + "'") != true) {
@@ -68,6 +69,10 @@ public class Spawns extends Mysql implements CommandExecutor {
 				}
 				break;
 			case "delete":
+				if (!player.hasPermission("spawns.delete")) {
+					player.sendMessage(ChatColor.RED + "Je hebt niet de juiste bevoegdheden op deze commando te gebruiken!");
+					return false;
+				}
 				//Delete een bestaande spawn locatie
 				if (args.length == 1) {
 					player.sendMessage(ChatColor.RED + "Gebruik /" + cmd.getName() + " " +  args[0] + " <naam>");
@@ -83,6 +88,10 @@ public class Spawns extends Mysql implements CommandExecutor {
 				player.sendMessage(ChatColor.GREEN + "Locatie is succesvol gedeleted!");
 				break;
 			case "setmain":
+				if (!player.hasPermission("spawns.setmain")) {
+					player.sendMessage(ChatColor.RED + "Je hebt niet de juiste bevoegdheden op deze commando te gebruiken!");
+					return false;
+				}
 				//Set de login / respawn locatie!
 				if (args.length == 2) {
 					//Kijk of de locatie bestaat
@@ -107,7 +116,32 @@ public class Spawns extends Mysql implements CommandExecutor {
 					player.sendMessage(ChatColor.RED + "Gebruik /" + cmd.getName() + " " +  args[0] + " <naam>");
 				}
 				break;
+			case "list":
+				if (!player.hasPermission("spawns.list")) {
+					player.sendMessage(ChatColor.RED + "Je hebt niet de juiste bevoegdheden op deze commando te gebruiken!");
+					return false;
+				}
+				//Stuur een lijst met alle spawn locatie's
+				String spawnList = "";
+				ResultSet selects = select("SELECT * FROM " + plugin.ltable);
+				try {
+					while (selects.next()) {
+						spawnList += ", " + selects.getString("Name");
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				
+				if (spawnList.length() > 0) {
+					spawnList = spawnList.substring(2);
+				}
+				player.sendMessage(ChatColor.GREEN + "Locations: " + (spawnList == "" ? ChatColor.RED + "Er zijn geen locations gevonden!" : ChatColor.DARK_GREEN + spawnList));
+				break;
 			default:
+				if (!player.hasPermission("spawns.select")) {
+					player.sendMessage(ChatColor.RED + "Je hebt niet de juiste bevoegdheden op deze commando te gebruiken!");
+					return false;
+				}
 				//Teleport naar de locatie
 				//Check of er wel een Locatie bestaat met de naam zo ja haal gegeven ervan op
 				if (valueExists("SELECT * FROM " + plugin.ltable + " WHERE Name='" + args[0] + "'") == true) {
