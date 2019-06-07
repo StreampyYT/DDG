@@ -1,0 +1,11 @@
+name: DDG
+version: 1.0
+authors: [Streampy]
+main: nl.streampy.Main
+description: Proefproject Kitpvp
+api-version: 1.13
+commands:
+  spawns:
+    description: help menu voor spawns
+  kit:
+    description: help menu voor kits
